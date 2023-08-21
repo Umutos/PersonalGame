@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 968851106196603718}
   - component: {fileID: 968851106196603717}
   - component: {fileID: 968851106196603716}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -94,7 +94,7 @@ GameObject:
   - component: {fileID: 968851106375941310}
   - component: {fileID: 968851106375941308}
   - component: {fileID: 968851106375941311}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Player Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -175,7 +175,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 968851106782027111}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Graphcs
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -209,7 +209,7 @@ GameObject:
   - component: {fileID: 968851106991066220}
   - component: {fileID: 968851106991066210}
   - component: {fileID: 968851106991066221}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Camera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -292,7 +292,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 968851107444601245}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Gun
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -332,9 +332,12 @@ GameObject:
   - component: {fileID: -3358472449130142841}
   - component: {fileID: -1545167791038900145}
   - component: {fileID: 151361446780961679}
-  m_Layer: 0
+  - component: {fileID: 8435602807972271814}
+  - component: {fileID: 4034407790614064119}
+  - component: {fileID: 2332787834786350584}
+  m_Layer: 6
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -398,6 +401,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cam: {fileID: 968851106991066210}
+  camAngle: 85
 --- !u!114 &968851107582747526
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -450,6 +454,8 @@ MonoBehaviour:
   - {fileID: 968851107582747526}
   - {fileID: 968851106991066210}
   - {fileID: 968851106991066221}
+  - {fileID: 2332787834786350584}
+  EnemiLayerName: EnemiPlayer
 --- !u!114 &-1545167791038900145
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -519,3 +525,58 @@ MonoBehaviour:
   compressRotation: 0
   positionPrecision: 0.01
   scalePrecision: 0.01
+--- !u!136 &8435602807972271814
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 968851107582747533}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.5
+  m_Height: 1
+  m_Direction: 1
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!143 &4034407790614064119
+CharacterController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 968851107582747533}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Height: 2
+  m_Radius: 0.5
+  m_SlopeLimit: 45
+  m_StepOffset: 0.3
+  m_SkinWidth: 0.08
+  m_MinMoveDistance: 0.001
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &2332787834786350584
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 968851107582747533}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7f99fcc86c44414d9db5bdc79bbe66a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  weapon:
+    name: Gun
+    damage: 1
+    range: 100
+  cam: {fileID: 968851106991066210}
+  mask:
+    serializedVersion: 2
+    m_Bits: 183

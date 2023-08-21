@@ -8,7 +8,11 @@ public class PlayerMotor : MonoBehaviour
 
     private Vector3 velocity;
     private Vector3 rotation;
-    private Vector3 camRot;
+    private float camRotX = 0f;
+    private float currentCamRotX = 0f;
+
+    [SerializeField]
+    private float camAngle = 85f;
 
     private Rigidbody rb;
 
@@ -26,9 +30,9 @@ public class PlayerMotor : MonoBehaviour
     {
         rotation = _rotation;
     }
-    public void CamRotation(Vector3 _camRot)
+    public void CamRotation(float _camRotX)
     {
-        camRot = _camRot;
+        camRotX = _camRotX;
     }
 
     private void FixedUpdate()
@@ -46,8 +50,13 @@ public class PlayerMotor : MonoBehaviour
 
     private void PerfRot()
     {
+        //Calcule Rotate Camera
         rb.MoveRotation(rb.rotation * Quaternion.Euler(rotation));
-        cam.transform.Rotate(-camRot);
+        currentCamRotX -= camRotX;
+        currentCamRotX = Mathf.Clamp(currentCamRotX, -camAngle, camAngle);
+
+        //Apply rotate
+        cam.transform.localEulerAngles = new Vector3(currentCamRotX, 0f, 0f);
     }
 
 }
