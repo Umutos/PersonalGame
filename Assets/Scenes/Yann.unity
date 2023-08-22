@@ -838,7 +838,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1445958940}
   - component: {fileID: 1445958939}
-  - component: {fileID: 1445958938}
   m_Layer: 0
   m_Name: SceneCamera
   m_TagString: MainCamera
@@ -846,14 +845,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!81 &1445958938
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1445958937}
-  m_Enabled: 1
 --- !u!20 &1445958939
 Camera:
   m_ObjectHideFlags: 0
@@ -1025,7 +1016,7 @@ GameObject:
   - component: {fileID: 1988734727}
   m_Layer: 0
   m_Name: Sphere
-  m_TagString: Untagged
+  m_TagString: Sphere
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
