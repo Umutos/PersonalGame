@@ -1,4 +1,8 @@
-[Ll]ibrary/
+### Unity ###
+# This .gitignore file should be placed at the root of your Unity project directory
+#
+# Get latest from https://github.com/github/gitignore/blob/main/Unity.gitignore
+/[Ll]ibrary/
 /[Tt]emp/
 /[Oo]bj/
 /[Bb]uild/
@@ -43,6 +47,11 @@ ExportedObj/
 *.opendb
 *.VC.db
 
+# Unity3D generated meta files
+*.pidb.meta
+*.pdb.meta
+*.mdb.meta
+
 # Unity3D generated file on crash reports
 sysinfo.txt
 
@@ -51,14 +60,6 @@ sysinfo.txt
 *.aab
 *.unitypackage
 *.app
-
-# Meta Files built by Visual Studio
-*.meta
-
-# Unity3D generated meta files
-*.pidb.meta
-*.pdb.meta
-*.mdb.meta
 
 # Crashlytics generated file
 crashlytics-build.properties
@@ -69,11 +70,3 @@ crashlytics-build.properties
 # Temporary auto-generated Android Assets
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
-
-ProjectSettings/HDRPProjectSettings.asset
-
-ProjectSettings/Packages/com.unity.probuilder/Settings.json
-
-Assets/ProjectSettings/TextMesh Pro/Examples & Extras/Fonts/Electronic Highway Sign.TTF
-
-Assets/ProjectSettings/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF - Fallback.asset
