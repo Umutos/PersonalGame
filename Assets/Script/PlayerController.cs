@@ -16,6 +16,8 @@ public class PlayerController : MonoBehaviour
     private void Start()
     { 
         motor = GetComponent<PlayerMotor>();
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
     private void Update()
