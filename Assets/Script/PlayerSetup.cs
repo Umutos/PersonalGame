@@ -27,14 +27,18 @@ public class PlayerSetup : NetworkBehaviour
             }
         }
 
-        RegisterPlayer();
+        GetComponent<Player>().Setup();
     }
 
-    private void RegisterPlayer()
+    //Start when someone connect server
+    public override void OnStartClient()
     {
-        //Add player id
-        string playerName = "Player" + GetComponent<NetworkIdentity>().netId;
-        transform.name = playerName;
+        base.OnStartClient();
+
+        string netID = GetComponent<NetworkIdentity>().netId.ToString();
+        Player player = GetComponent<Player>();
+
+        GameManager.RegisterPlayer(netID, player);
     }
 
     private void AssignEnemiPlayer() 
@@ -57,5 +61,7 @@ public class PlayerSetup : NetworkBehaviour
         {
             sceneCam.gameObject.SetActive(true);   
         }
+
+        GameManager.UnregisterPlayer(transform.name);
     }
 }

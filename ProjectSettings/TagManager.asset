@@ -15,8 +15,8 @@ TagManager:
   - Water
   - UI
   - Screen
-  - 
-  - 
+  - LocalPlayer
+  - EnemiPlayer
   - 
   - 
   - 

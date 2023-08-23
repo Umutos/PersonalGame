@@ -46,7 +46,7 @@ public class PlayerShoot : NetworkBehaviour
         {
             if(hit.collider.tag == "Player")
             {
-                CommandPlayerShot(hit.collider.name);
+                CommandPlayerShot(hit.collider.name, weapon.damage);
             }
 
             if (hit.collider.tag == "Screen")
@@ -59,9 +59,12 @@ public class PlayerShoot : NetworkBehaviour
     }
 
     [Command]
-    private void CommandPlayerShot(string playerName)
+    private void CommandPlayerShot(string playerId, float damage)
     {
-        Debug.Log(playerName + " get touch");
+        Debug.Log(playerId + " get touch");
+
+        Player player = GameManager.GetPlayer(playerId);
+        player.RpcTakeDamage(damage);
     }
 
     private void CommandScreenShot(RaycastHit hit)
