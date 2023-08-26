@@ -7,7 +7,17 @@ public class PlayerSetup : NetworkBehaviour
     Behaviour[] componentToDisable;
 
     [SerializeField]
-    private string EnemiLayerName = "EnemiPlayer";
+    private string enemiLayerName = "EnemiPlayer";
+
+    [SerializeField]
+    private string dontDrawLayerName = "DontDraw";
+
+    [SerializeField]
+    private GameObject playerGraphics;
+
+    [SerializeField]
+    private GameObject playerUIPrefab;
+    private GameObject playerUIInstance;
 
     Camera sceneCam;
 
@@ -25,9 +35,26 @@ public class PlayerSetup : NetworkBehaviour
             {
                 sceneCam.gameObject.SetActive(false);
             }
+
+            //Desable our player graphics for camera
+            SetLayerRecursively(playerGraphics, LayerMask.NameToLayer(dontDrawLayerName));
+
+            //Create local player UI 
+            playerUIInstance = Instantiate(playerUIPrefab);
+
         }
 
         GetComponent<Player>().Setup();
+    }
+
+    private void SetLayerRecursively(GameObject obj, int newLayer)
+    {
+        obj.layer = newLayer;
+
+        foreach (Transform child in obj.transform)
+        {
+            SetLayerRecursively(child.gameObject, newLayer);
+        }
     }
 
     //Start when someone connect server
@@ -43,7 +70,7 @@ public class PlayerSetup : NetworkBehaviour
 
     private void AssignEnemiPlayer() 
     {
-        gameObject.layer = LayerMask.NameToLayer(EnemiLayerName);
+        gameObject.layer = LayerMask.NameToLayer(enemiLayerName);
     }
 
     private void DisableComponents()
@@ -57,6 +84,8 @@ public class PlayerSetup : NetworkBehaviour
 
     private void OnDisable()
     {
+        Destroy(playerUIInstance);
+
         if(sceneCam != null)
         {
             sceneCam.gameObject.SetActive(true);   

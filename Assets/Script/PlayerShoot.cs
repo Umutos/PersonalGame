@@ -2,9 +2,11 @@ using UnityEngine;
 using Mirror;
 using System.Collections;
 
+[RequireComponent(typeof(WeaponManager))]
 public class PlayerShoot : NetworkBehaviour
 {
-    public PlayerWeapon weapon;
+    private PlayerWeapon currentWeapon;
+    private WeaponManager weaponManager;
 
     [SerializeField]
     private Camera cam;
@@ -25,28 +27,48 @@ public class PlayerShoot : NetworkBehaviour
             Debug.LogError("Camera Missing in PlayerShoot");
             this.enabled = false;
         }
+
+        weaponManager = GetComponent<WeaponManager>();
     }
 
     private void Update()
     {
-        if(Input.GetButtonDown("Fire1"))
+        currentWeapon = weaponManager.GetCurrentWeapon();
+
+        if(currentWeapon.fireRate <= 0f)
         {
-            Shoot();
-            //Debug raycast
-            //Debug.DrawRay(cam.transform.position, cam.transform.forward * weapon.range, Color.green);
+            if (Input.GetButtonDown("Fire1"))
+            {
+                Shoot();
+                //Debug raycast
+                //Debug.DrawRay(cam.transform.position, cam.transform.forward * weapon.range, Color.green);
+            }
         }
+        else
+        {
+            if (Input.GetButtonDown("Fire1"))
+            {
+                InvokeRepeating("Shoot", 0f, 1f / currentWeapon.fireRate);
+            }
+            else if (Input.GetButtonUp("Fire1"))
+            {
+                CancelInvoke("Shoot");
+            }
+        }
+        
     }
 
     [Client]
     private void Shoot()
     {
+        Debug.Log("SHOOOOT");
         RaycastHit hit;
 
-        if(Physics.Raycast(cam.transform.position, cam.transform.forward, out hit, weapon.range, mask))
+        if(Physics.Raycast(cam.transform.position, cam.transform.forward, out hit, currentWeapon.range, mask))
         {
             if(hit.collider.tag == "Player")
             {
-                CommandPlayerShot(hit.collider.name, weapon.damage);
+                CommandPlayerShot(hit.collider.name, currentWeapon.damage);
             }
 
             if (hit.collider.tag == "Screen")
