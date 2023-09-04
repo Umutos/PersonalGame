@@ -518,12 +518,12 @@ MonoBehaviour:
   - {fileID: 968851107582747526}
   - {fileID: 968851106991066210}
   - {fileID: 968851106991066221}
-  - {fileID: 2332787834786350584}
   - {fileID: 7403167468974738334}
   enemiLayerName: EnemiPlayer
   dontDrawLayerName: DontDraw
   playerGraphics: {fileID: 968851106782027110}
   playerUIPrefab: {fileID: 4002895679767368045, guid: 187114a12d679eb48aa79b73f6b4d21a, type: 3}
+  playerUIInstance: {fileID: 0}
 --- !u!114 &-1545167791038900145
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -630,9 +630,15 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   maxLife: 3
+  kills: 0
+  deaths: 0
   disableOnDeath:
   - {fileID: 2332787834786350584}
   - {fileID: 968851107582747526}
+  disableGameObjectOnDeath:
+  - {fileID: 968851106991066223}
+  deathParticules: {fileID: 2862474794430423876, guid: c7ea25b6e6624334f90199413d131cb5, type: 3}
+  netAnim: {fileID: -7602437448327046930}
 --- !u!95 &1046712482
 Animator:
   serializedVersion: 4
@@ -685,14 +691,11 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  primaryWeapon:
-    name: Carabine
-    damage: 0.2
-    range: 100
-    fireRate: 10
-    graphcs: {fileID: 5353068296915377371, guid: 8c14aa89254b10d47bf158519233118a, type: 3}
+  primaryWeapon: {fileID: 11400000, guid: 460f9e9b2b6254243aa47bf40bed8d36, type: 2}
   weaponHolder: {fileID: 3292873038873051367}
   weaponLayerName: Weapon
+  currentMagazineSize: 0
+  isReloading: 0
 --- !u!1 &1077712246761749216
 GameObject:
   m_ObjectHideFlags: 0

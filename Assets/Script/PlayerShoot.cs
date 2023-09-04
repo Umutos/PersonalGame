@@ -1,11 +1,12 @@
 using UnityEngine;
 using Mirror;
 using System.Collections;
+using UnityEngine.Rendering;
 
 [RequireComponent(typeof(WeaponManager))]
 public class PlayerShoot : NetworkBehaviour
 {
-    private PlayerWeapon currentWeapon;
+    private WeaponData currentWeapon;
     private WeaponManager weaponManager;
 
     [SerializeField]
@@ -13,6 +14,7 @@ public class PlayerShoot : NetworkBehaviour
 
     [SerializeField]   
     LayerMask mask;
+
     public Material lineMaterial;
     public float lineWidth = 0.1f;
     public float lineDuration = 1.0f;
@@ -35,13 +37,22 @@ public class PlayerShoot : NetworkBehaviour
     {
         currentWeapon = weaponManager.GetCurrentWeapon();
 
+        if (PauseMenu.isOn)
+        {
+            return;
+        }
+
+        if(Input.GetKeyDown(KeyCode.R) && weaponManager.currentMagazineSize < currentWeapon.magazineSize)
+        {
+            StartCoroutine(weaponManager.Reload());
+            return;
+        }
+
         if(currentWeapon.fireRate <= 0f)
         {
             if (Input.GetButtonDown("Fire1"))
             {
                 Shoot();
-                //Debug raycast
-                //Debug.DrawRay(cam.transform.position, cam.transform.forward * weapon.range, Color.green);
             }
         }
         else
@@ -58,35 +69,78 @@ public class PlayerShoot : NetworkBehaviour
         
     }
 
+    [Command]
+    void CommandOnHit(Vector3 pos, Vector3 normal)
+    {
+        RpcDoHitEffect(pos, normal);
+    }
+
+    [ClientRpc]
+    void RpcDoHitEffect(Vector3 pos, Vector3 normal)
+    {
+        GameObject hitEffect = Instantiate(weaponManager.GetCurrentGraphcs().hitEffectPrefab, pos, Quaternion.LookRotation(normal));
+        Destroy(hitEffect, 2f);
+    }
+
+    //When Someone shoot, this funtion is call on the server
+    [Command]
+    void CommandOnShoot()
+    {
+        RpcShootEffect();
+    }
+
+    //Particuls effect visible for all players
+    [ClientRpc]
+    void RpcShootEffect()
+    {
+        weaponManager.GetCurrentGraphcs().muzzleFlash.Play();
+    }
+
     [Client]
     private void Shoot()
     {
-        Debug.Log("SHOOOOT");
+        if(!isLocalPlayer || weaponManager.isReloading)
+        {
+            return;
+        }
+
+        if(weaponManager.currentMagazineSize <= 0)
+        {
+            StartCoroutine(weaponManager.Reload());
+            return;
+        }
+
+        weaponManager.currentMagazineSize--;
+
+        Debug.Log("Rest : " + weaponManager.currentMagazineSize);
+
+        CommandOnShoot();
+
         RaycastHit hit;
 
         if(Physics.Raycast(cam.transform.position, cam.transform.forward, out hit, currentWeapon.range, mask))
         {
             if(hit.collider.tag == "Player")
             {
-                CommandPlayerShot(hit.collider.name, currentWeapon.damage);
+                CommandPlayerShot(hit.collider.name, currentWeapon.damage, transform.name);
             }
 
             if (hit.collider.tag == "Screen")
             {
                 CommandScreenShot(hit);
             }
+
+            CommandOnHit(hit.point, hit.normal);
         }
-        //Debug raycast
-        //DrawRaycastLine(cam.transform.position, cam.transform.position+ cam.transform.forward* weapon.range, lineDuration);
     }
 
     [Command]
-    private void CommandPlayerShot(string playerId, float damage)
+    private void CommandPlayerShot(string playerId, float damage, string sourceID)
     {
         Debug.Log(playerId + " get touch");
 
         Player player = GameManager.GetPlayer(playerId);
-        player.RpcTakeDamage(damage);
+        player.RpcTakeDamage(damage, sourceID);
     }
 
     private void CommandScreenShot(RaycastHit hit)

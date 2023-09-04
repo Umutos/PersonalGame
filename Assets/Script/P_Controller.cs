@@ -22,17 +22,29 @@ public class P_Controller : NetworkBehaviour
     { 
         motor = GetComponent<PlayerMotor>();
         anim = GetComponent<Animator>();    
-        Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
     }
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if(PauseMenu.isOn)
         {
-            Cursor.visible = true;
-            Cursor.lockState = CursorLockMode.None;
+            if (Cursor.lockState != CursorLockMode.None)
+            {
+                Cursor.lockState = CursorLockMode.None;
+            }
+
+            motor.Move(Vector3.zero);
+            motor.Rotation(Vector3.zero);
+            motor.CamRotation(0f);
+
+            return;
         }
+
+        if(Cursor.lockState != CursorLockMode.Locked)
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+        }
+
         //Calcul Velocity
         float xMov = Input.GetAxis("Horizontal");
         float zMov = Input.GetAxis("Vertical");

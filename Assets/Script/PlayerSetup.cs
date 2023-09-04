@@ -1,6 +1,9 @@
 using UnityEngine;
 using Mirror;
+using Mirror.Examples.AdditiveLevels;
 
+[RequireComponent(typeof(Player))]
+[RequireComponent (typeof(P_Controller))]
 public class PlayerSetup : NetworkBehaviour
 {
     [SerializeField]
@@ -17,9 +20,9 @@ public class PlayerSetup : NetworkBehaviour
 
     [SerializeField]
     private GameObject playerUIPrefab;
-    private GameObject playerUIInstance;
 
-    Camera sceneCam;
+    [HideInInspector]
+    public GameObject playerUIInstance;
 
     private void Start()
     {
@@ -30,30 +33,14 @@ public class PlayerSetup : NetworkBehaviour
         }
         else
         {
-            sceneCam = Camera.main;
-            if(sceneCam != null)
-            {
-                sceneCam.gameObject.SetActive(false);
-            }
-
             //Desable our player graphics for camera
-            SetLayerRecursively(playerGraphics, LayerMask.NameToLayer(dontDrawLayerName));
+            Utils.SetLayerRecursively(playerGraphics, LayerMask.NameToLayer(dontDrawLayerName));
 
             //Create local player UI 
             playerUIInstance = Instantiate(playerUIPrefab);
 
-        }
+            GetComponent<Player>().Setup();
 
-        GetComponent<Player>().Setup();
-    }
-
-    private void SetLayerRecursively(GameObject obj, int newLayer)
-    {
-        obj.layer = newLayer;
-
-        foreach (Transform child in obj.transform)
-        {
-            SetLayerRecursively(child.gameObject, newLayer);
         }
     }
 
@@ -86,9 +73,9 @@ public class PlayerSetup : NetworkBehaviour
     {
         Destroy(playerUIInstance);
 
-        if(sceneCam != null)
+        if(isLocalPlayer)
         {
-            sceneCam.gameObject.SetActive(true);   
+            GameManager.instance.SetSceneCamActive(true);
         }
 
         GameManager.UnregisterPlayer(transform.name);

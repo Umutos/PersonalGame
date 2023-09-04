@@ -1,12 +1,14 @@
 using UnityEngine;
 using Mirror;
+using System.Collections;
 
 public class WeaponManager : NetworkBehaviour
 {
     [SerializeField]
-    private PlayerWeapon primaryWeapon;
+    private WeaponData primaryWeapon;
 
-    private PlayerWeapon currentWeapon;
+    private WeaponData currentWeapon;
+    private WeaponGraphcs currentGraphcs;
 
     [SerializeField] 
     private Transform weaponHolder;
@@ -14,35 +16,82 @@ public class WeaponManager : NetworkBehaviour
     [SerializeField]
     private string weaponLayerName = "Weapon";
 
+    [HideInInspector]
+    public int currentMagazineSize;
+
+    public bool isReloading = false;
+
     void Start()
     {
         EquipWeapon(primaryWeapon);
     }
 
-    public PlayerWeapon GetCurrentWeapon()
+    public WeaponData GetCurrentWeapon()
     {
         return currentWeapon;
     }
 
-    void EquipWeapon(PlayerWeapon _weapon)
+    public WeaponGraphcs GetCurrentGraphcs()
+    {
+        return currentGraphcs;
+    }
+
+    void EquipWeapon(WeaponData _weapon)
     {
         currentWeapon = _weapon;
+        currentMagazineSize = _weapon.magazineSize;
+
         GameObject weaponInst = Instantiate(_weapon.graphcs, weaponHolder.position, weaponHolder.rotation);
         weaponInst.transform.SetParent(weaponHolder);
 
+        currentGraphcs = weaponInst.GetComponent<WeaponGraphcs>();
+
+        if (currentGraphcs == null)
+        {
+            Debug.LogError("No WeaponGraphcs scrips in this weapon : " + weaponInst.name);
+        }
+
         if(isLocalPlayer)
         {
-            SetLayerRecursively(weaponInst, LayerMask.NameToLayer(weaponLayerName));
+            Utils.SetLayerRecursively(weaponInst, LayerMask.NameToLayer(weaponLayerName));
         }
     }
 
-    private void SetLayerRecursively(GameObject obj, int newLayer)
+    public IEnumerator Reload()
     {
-        obj.layer = newLayer;
-
-        foreach (Transform child in obj.transform)
+        if(isReloading)
         {
-            SetLayerRecursively(child.gameObject, newLayer);
+            yield break;
+        }
+
+        Debug.Log("reloading...");
+
+        isReloading = true;
+
+        CommandOnReload();
+        yield return new WaitForSeconds(currentWeapon.timeReload);
+        currentMagazineSize = currentWeapon.magazineSize;
+
+        isReloading = false;
+
+        Debug.Log("reload finish");
+    }
+
+    [Command]
+    void CommandOnReload()
+    {
+        RpcOnReload();
+    }
+
+    [ClientRpc]
+    void RpcOnReload()
+    {
+        Animator animator = currentGraphcs.GetComponent<Animator>();
+        if (animator != null)
+        {
+            animator.SetTrigger("Reload");
         }
     }
+
+
 }

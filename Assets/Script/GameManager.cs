@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class GameManager : MonoBehaviour
 {
@@ -11,6 +12,12 @@ public class GameManager : MonoBehaviour
 
     public static GameManager instance;
 
+    [SerializeField]
+    private GameObject sceneCam;
+
+    public delegate void OnPlayerKilledCallback(string player, string source);
+    public OnPlayerKilledCallback onPlayerKilledCallback;
+
     private void Awake()
     {
         if(instance == null)
@@ -20,6 +27,16 @@ public class GameManager : MonoBehaviour
         }
 
         Debug.LogError("WOW more than one instance in this scene");
+    }
+
+    public void SetSceneCamActive(bool isActive)
+    {
+        if (sceneCam == null)
+        {
+            return;
+        }
+
+        sceneCam.SetActive(isActive);
     }
 
     public static void RegisterPlayer(string netID, Player player)
@@ -37,6 +54,11 @@ public class GameManager : MonoBehaviour
     public static Player GetPlayer(string playerId) 
     { 
         return players[playerId];
+    }
+
+    public static Player[] GetAllPlayers()
+    {
+        return players.Values.ToArray();
     }
 
     /*private void OnGUI()
